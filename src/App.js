@@ -1,23 +1,35 @@
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
 import './App.css';
-
+import axios from 'axios';
+import CountryItems from './components/countries/CountryItems';
+import Header from './components/ui/Header';
+import Search from './components/ui/Search';
+import Footer from './components/ui/Footer';
 function App() {
+
+  const [items,setItems] = useState([])
+  const [isLoading,setIsLoading] = useState(true)
+  const [query,setQuery] = useState('')
+  useEffect(()=>{
+    const fetchData = async () =>{
+      const response = await axios(`https://corona.lmao.ninja/v2/countries/${query}?sort=cases`)
+
+      //I used ternary because when we search for a country, api gives us object and in that way we can't
+      //map through it in CountryItems.js
+      setItems(query ==='' ?  (response.data) : Array(response.data)) 
+      setIsLoading(false)
+    }
+
+    fetchData()
+
+  },[query])
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container">
+
+    <Header />
+    <Search getQuery={(query)=>(setQuery(query))} />
+    <CountryItems items={items} isLoading={isLoading} />
+    <Footer/>
     </div>
   );
 }
