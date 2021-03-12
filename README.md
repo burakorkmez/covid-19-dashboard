@@ -5,9 +5,11 @@ React project that uses the [covid-19 api](https://documenter.getpostman.com/vie
 ## Usage
 
 ### Install dependencies
-```npm install
+```
+npm install
 ```
 ### Run app
-```npm start
+```
+npm start
 ```
 
