@@ -18,6 +18,7 @@ function App() {
       //map through it in CountryItems.js
       setItems(query ==='' ?  (response.data) : Array(response.data)) 
       setIsLoading(false)
+      console.log(response.data)
     }
 
     fetchData()
