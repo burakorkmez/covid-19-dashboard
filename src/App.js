@@ -14,11 +14,10 @@ function App() {
     const fetchData = async () =>{
       const response = await axios(`https://corona.lmao.ninja/v2/countries/${query}?sort=cases`)
 
-      //I used ternary because when we search for a country, api gives us object and in that way we can't
-      //map through it in CountryItems.js
+      //I used ternary because when we search for a country in search bar, api gives us object and in that
+      //way we can't map through it in CountryItems.js
       setItems(query ==='' ?  (response.data) : Array(response.data)) 
       setIsLoading(false)
-      console.log(response.data)
     }
 
     fetchData()
