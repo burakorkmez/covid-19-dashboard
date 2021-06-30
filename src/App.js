@@ -5,33 +5,49 @@ import CountryItems from './components/countries/CountryItems';
 import Header from './components/ui/Header';
 import Search from './components/ui/Search';
 import Footer from './components/ui/Footer';
+import Pagination from './components/ui/Pagination';
+
 function App() {
+	const [items, setItems] = useState([]);
+	const [isLoading, setIsLoading] = useState(true);
+	const [query, setQuery] = useState('');
+	const [currentPage, setCurrentPage] = useState(1);
+	const [itemsPerPage, , setItemsPerPage] = useState(15);
 
-  const [items,setItems] = useState([])
-  const [isLoading,setIsLoading] = useState(true)
-  const [query,setQuery] = useState('')
-  useEffect(()=>{
-    const fetchData = async () =>{
-      const response = await axios(`https://corona.lmao.ninja/v2/countries/${query}?sort=cases`)
+	useEffect(() => {
+		const fetchData = async () => {
+			const response = await axios(
+				`https://corona.lmao.ninja/v2/countries/${query}?sort=cases`
+			);
 
-      //I used ternary because when we search for a country in search bar, api gives us object and in that
-      //way we can't map through it in CountryItems.js
-      setItems(query ==='' ?  (response.data) : Array(response.data)) 
-      setIsLoading(false)
-    }
+			//I used ternary because when we search for a country in search bar, api gives us object and in that
+			//way we can't map through it in CountryItems.js
+			setItems(query === '' ? response.data : Array(response.data));
+			setIsLoading(false);
+		};
 
-    fetchData()
+		fetchData();
+	}, [query]);
 
-  },[query])
-  return (
-    <div className="container">
+	const indexOfLastPost = currentPage * itemsPerPage;
+	const indexOfFirstPost = indexOfLastPost - itemsPerPage;
+	const currentCountries = items.slice(indexOfFirstPost, indexOfLastPost);
 
-    <Header />
-    <Search getQuery={(query)=>(setQuery(query))} />
-    <CountryItems items={items} isLoading={isLoading} />
-    <Footer/>
-    </div>
-  );
+	const paginate = (number) => setCurrentPage(number);
+
+	return (
+		<div className="container">
+			<Header />
+			<Search getQuery={(query) => setQuery(query)} />
+			<CountryItems items={currentCountries} isLoading={isLoading} />
+			<Pagination
+				itemsPerPage={itemsPerPage}
+				totalItems={items.length}
+				paginate={paginate}
+			/>
+			<Footer />
+		</div>
+	);
 }
 
 export default App;
